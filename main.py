@@ -1,21 +1,17 @@
-
-from pydoc import doc
-from tkinter.ttk import Sizegrip
 import matplotlib.pyplot as plt
 import networkx as nx
 import matplotlib.animation
 import random
-import numpy
 
 graphSize = 10
 nodeSize = 3000/graphSize
+features=2
 
 G = nx.Graph()
 
 fig, ax = plt.subplots(figsize=(10,10))
 
 class Drawables:    
-    blop=0
 
     #Nodes colors - default (should be empty)
     redNodes = []
@@ -40,61 +36,61 @@ class Drawables:
     oliveGroups = []
 
     #actors and their features
-    actors = [[0]*5]*(graphSize*graphSize)
+    actors = [[0]*features]*(graphSize*graphSize)
     actorsGroups = [0]*(graphSize*graphSize)
 
     def __init__(self):
         #defining groups
-        Drawables.redGroups = random.sample(range(0, 10), 5)
+        Drawables.redGroups = [random.randint(0,9) for _ in range(features)]
 
-        Drawables.orangeGroups = random.sample(range(0, 10), 5)
+        Drawables.orangeGroups = [random.randint(0,9) for _ in range(features)]
         numberOfDifferences = 0
-        for i in range(5):
+        for i in range(features):
             if(Drawables.orangeGroups[i]!=Drawables.redGroups[i]):
                 numberOfDifferences=numberOfDifferences+1
-        while numberOfDifferences==0 or numberOfDifferences==5:
-            Drawables.orangeGroups = random.sample(range(0, 10), 5)
+        while numberOfDifferences==0 or numberOfDifferences==features:
+            Drawables.orangeGroups = [random.randint(0,9) for _ in range(features)]
             numberOfDifferences = 0
-            for i in range(5):
+            for i in range(features):
                 if(Drawables.orangeGroups[i]!=Drawables.redGroups[i]):
                     numberOfDifferences=numberOfDifferences+1
 
 
-        Drawables.yellowGroups = random.sample(range(0, 10), 5)
+        Drawables.yellowGroups = [random.randint(0,9) for _ in range(features)]
         numberOfDifferences = 0
-        for i in range(5):
+        for i in range(features):
             if(Drawables.orangeGroups[i]!=Drawables.yellowGroups[i]):
                 numberOfDifferences=numberOfDifferences+1
-        while Drawables.yellowGroups==Drawables.redGroups or numberOfDifferences==0 or numberOfDifferences==5:
-            Drawables.yellowGroups = random.sample(range(0, 10), 5)
+        while Drawables.yellowGroups==Drawables.redGroups or numberOfDifferences==0 or numberOfDifferences==features:
+            Drawables.yellowGroups = [random.randint(0,9) for _ in range(features)]
             numberOfDifferences = 0
-            for i in range(5):
+            for i in range(features):
                 if(Drawables.orangeGroups[i]!=Drawables.yellowGroups[i]):
                     numberOfDifferences=numberOfDifferences+1
 
 
-        Drawables.greenGroups = random.sample(range(0, 10), 5)
+        Drawables.greenGroups = [random.randint(0,9) for _ in range(features)]
         numberOfDifferences = 0
-        for i in range(5):
+        for i in range(features):
             if(Drawables.greenGroups[i]!=Drawables.yellowGroups[i]):
                 numberOfDifferences=numberOfDifferences+1
-        while Drawables.greenGroups==Drawables.redGroups or Drawables.greenGroups==Drawables.orangeGroups or numberOfDifferences==0 or numberOfDifferences==5:
-            Drawables.greenGroups = random.sample(range(0, 10), 5)
+        while Drawables.greenGroups==Drawables.redGroups or Drawables.greenGroups==Drawables.orangeGroups or numberOfDifferences==0 or numberOfDifferences==features:
+            Drawables.greenGroups = [random.randint(0,9) for _ in range(features)]
             numberOfDifferences = 0
-            for i in range(5):
+            for i in range(features):
                 if(Drawables.greenGroups[i]!=Drawables.yellowGroups[i]):
                     numberOfDifferences=numberOfDifferences+1
 
 
-        Drawables.oliveGroups = random.sample(range(0, 10), 5)
+        Drawables.oliveGroups = [random.randint(0,9) for _ in range(features)]
         numberOfDifferences = 0
-        for i in range(5):
+        for i in range(features):
             if(Drawables.greenGroups[i]!=Drawables.oliveGroups[i]):
                 numberOfDifferences=numberOfDifferences+1
-        while Drawables.oliveGroups==Drawables.redGroups or Drawables.oliveGroups==Drawables.orangeGroups or Drawables.oliveGroups==Drawables.yellowGroups or numberOfDifferences==0 or numberOfDifferences==5:
-            Drawables.oliveGroups = random.sample(range(0, 10), 5)
+        while Drawables.oliveGroups==Drawables.redGroups or Drawables.oliveGroups==Drawables.orangeGroups or Drawables.oliveGroups==Drawables.yellowGroups or numberOfDifferences==0 or numberOfDifferences==features:
+            Drawables.oliveGroups = [random.randint(0,9) for _ in range(features)]
             numberOfDifferences = 0
-            for i in range(5):
+            for i in range(features):
                 if(Drawables.greenGroups[i]!=Drawables.oliveGroups[i]):
                     numberOfDifferences=numberOfDifferences+1
 
@@ -132,21 +128,21 @@ def updatePlot(num):
                 
                 numberOfDifferences=0
                 j=0
-                for j in range(5):
+                for j in range(features):
                     if(Drawables.actors[i][j]!=Drawables.actors[i+1][j]):
                         numberOfDifferences=numberOfDifferences+1
 
-                if(numberOfDifferences>0 and numberOfDifferences<5): G.add_edge(i,i+1, weight=8.7)
+                if(numberOfDifferences>0 and numberOfDifferences<features): G.add_edge(i,i+1, weight=8.7)
 
             if x < graphSize-1:
                 
                 numberOfDifferences=0
                 j=0
-                for j in range(5):
+                for j in range(features):
                     if(Drawables.actors[i][j]!=Drawables.actors[i+graphSize][j]):
                         numberOfDifferences=numberOfDifferences+1
 
-                if(numberOfDifferences>0 and numberOfDifferences<5): G.add_edge(i,i+graphSize, weight=4.7)
+                if(numberOfDifferences>0 and numberOfDifferences<features): G.add_edge(i,i+graphSize, weight=4.7)
             i = i+1
 
     pos=nx.get_node_attributes(G,'pos')
@@ -204,7 +200,7 @@ def updateValues(num):
     i=0
     differencesList=[]
     numberOfDifferences = 0
-    for i in range(5):
+    for i in range(features):
         if(Drawables.actors[actual][i]!=Drawables.actors[actual+neighbour][i]):
             differencesList.append(i)
             numberOfDifferences=numberOfDifferences+1
@@ -214,7 +210,7 @@ def updateValues(num):
         
         randomNumber=random.randint(0, 99)
         j=0
-        if(randomNumber<20*(5-numberOfDifferences)):
+        if(randomNumber<(100/features)*(features-numberOfDifferences)):
             #showing the interaction
             Drawables.redEdges = []
             Drawables.orangeEdges = []
@@ -236,11 +232,6 @@ def updateValues(num):
 
             #changing the actor's group if their features are the same 
             if(Drawables.actors[actual]==Drawables.actors[actual+neighbour]): Drawables.actorsGroups[actual]=Drawables.actorsGroups[actual+neighbour]
-            #if(Drawables.actors[actual] == Drawables.redGroups):  Drawables.actorsGroups[actual]=1
-            #elif(Drawables.actors[actual] == Drawables.orangeGroups):  Drawables.actorsGroups[actual]=2
-            #elif(Drawables.actors[actual] == Drawables.yellowGroups):  Drawables.actorsGroups[actual]=3
-            #elif(Drawables.actors[actual] == Drawables.greenGroups):  Drawables.actorsGroups[actual]=4
-            #elif(Drawables.actors[actual] == Drawables.oliveGroups):  Drawables.actorsGroups[actual]=5
             
 
     updatePlot(num)
