@@ -211,6 +211,7 @@ def updateValues(num):
 
     #getting interaction with some probability if they have at least one same feature
     if(numberOfDifferences>0 and numberOfDifferences<5):
+        
         randomNumber=random.randint(0, 99)
         j=0
         if(randomNumber<20*(5-numberOfDifferences)):
