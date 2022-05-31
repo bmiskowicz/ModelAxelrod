@@ -1,33 +1,17 @@
-import matplotlib.pyplot as plt
-import networkx as nx
-import matplotlib.animation
 import random
 
-graphSize = 10
-nodeSize = 3000/graphSize
-features=5
 
-G = nx.Graph()
+graphSize = 30
+features = 100
 
-fig, ax = plt.subplots(figsize=(10,10))
+
 
 class Drawables:    
+    #wb = xw.Book('axelrod.xlsx')  
+    #sheet1 = wb.sheets['actors']
+    #sheet2 = wb.sheets['groups']
+    bloop=1
     iterations=0
-
-    #Nodes colors - default (should be empty)
-    redNodes = []
-    orangeNodes = []
-    yellowNodes = []
-    greenNodes = []
-    oliveNodes = []
-
-    #Edges colors - default (should be empty)
-    redEdges = []
-    orangeEdges = []
-    yellowEdges = []
-    greenEdges = []
-    oliveEdges = []
-    blackEdges = []
 
     #groups features - default (should be empty)
     redGroups = []
@@ -49,7 +33,7 @@ class Drawables:
         for i in range(features):
             if(Drawables.orangeGroups[i]!=Drawables.redGroups[i]):
                 numberOfDifferences=numberOfDifferences+1
-        while numberOfDifferences==0 or numberOfDifferences==features:
+        while numberOfDifferences==0 or numberOfDifferences==5:
             Drawables.orangeGroups = [random.randint(0,9) for _ in range(features)]
             numberOfDifferences = 0
             for i in range(features):
@@ -88,7 +72,7 @@ class Drawables:
         for i in range(features):
             if(Drawables.greenGroups[i]!=Drawables.oliveGroups[i]):
                 numberOfDifferences=numberOfDifferences+1
-        while Drawables.oliveGroups==Drawables.redGroups or Drawables.oliveGroups==Drawables.orangeGroups or Drawables.oliveGroups==Drawables.yellowGroups or numberOfDifferences==0 or numberOfDifferences==features:
+        while Drawables.oliveGroups==Drawables.redGroups or Drawables.oliveGroups==Drawables.orangeGroups or Drawables.oliveGroups==Drawables.yellowGroups or numberOfDifferences==0 or numberOfDifferences==5:
             Drawables.oliveGroups = [random.randint(0,9) for _ in range(features)]
             numberOfDifferences = 0
             for i in range(features):
@@ -108,81 +92,10 @@ def Actors():
         elif(actorGroup==5): Drawables.actors[i] = Drawables.oliveGroups.copy()
         Drawables.actorsGroups[i] = actorGroup
 
-#Main function
-def updatePlot(num):
-    ## Clear plot
-    ax.clear()
-    
-    ## Plot size
-    pos = [graphSize*graphSize]
 
-    ## Create plot
-    i = 0
-    labeldict = {}
-    G.clear_edges()
-    for x in range(graphSize):
-        for y in range(graphSize):
-            labeldict[i]=''.join(str(e) for e in Drawables.actors[i])
-            G.add_node(i, pos = (x+1, y+1))
-
-            if y < graphSize-1: 
-                
-                numberOfDifferences=0
-                j=0
-                for j in range(features):
-                    if(Drawables.actors[i][j]!=Drawables.actors[i+1][j]):
-                        numberOfDifferences=numberOfDifferences+1
-
-                if(numberOfDifferences>0 and numberOfDifferences<features): G.add_edge(i,i+1, weight=8.7)
-
-            if x < graphSize-1:
-                
-                numberOfDifferences=0
-                j=0
-                for j in range(features):
-                    if(Drawables.actors[i][j]!=Drawables.actors[i+graphSize][j]):
-                        numberOfDifferences=numberOfDifferences+1
-
-                if(numberOfDifferences>0 and numberOfDifferences<features): G.add_edge(i,i+graphSize, weight=4.7)
-            i = i+1
-
-    pos=nx.get_node_attributes(G,'pos')
-
-    #set new nodes
-    Drawables.redNodes = []
-    Drawables.orangeNodes = []
-    Drawables.yellowNodes = []
-    Drawables.greenNodes = []
-    Drawables.oliveNodes = []
-
-    i=0
-    for i in range(graphSize*graphSize):
-        if(Drawables.actorsGroups[i]==1):    Drawables.redNodes.append(i)
-        elif (Drawables.actorsGroups[i]==2): Drawables.orangeNodes.append(i)
-        elif (Drawables.actorsGroups[i]==3): Drawables.yellowNodes.append(i)
-        elif (Drawables.actorsGroups[i]==4): Drawables.greenNodes.append(i)
-        elif (Drawables.actorsGroups[i]==5): Drawables.oliveNodes.append(i)
-    
-    ## Color Nodes
-    nx.draw_networkx(G, pos, node_size = nodeSize, with_labels=False)
-    nx.draw_networkx_nodes(G, pos, nodelist=Drawables.redNodes, node_size = nodeSize, node_color="red")
-    nx.draw_networkx_nodes(G, pos, nodelist=Drawables.orangeNodes, node_size = nodeSize, node_color="orange")
-    nx.draw_networkx_nodes(G, pos, nodelist=Drawables.yellowNodes, node_size = nodeSize, node_color="yellow")
-    nx.draw_networkx_nodes(G, pos, nodelist=Drawables.greenNodes, node_size = nodeSize, node_color="green")
-    nx.draw_networkx_nodes(G, pos, nodelist=Drawables.oliveNodes, node_size = nodeSize, node_color="olive")
-    ## Labels
-    nx.draw_networkx_labels(G, pos,  labels=labeldict, font_size=6, font_color="black")
-
-    ## Color edges
-    nx.draw_networkx_edges(G, pos, edgelist=Drawables.redEdges,alpha=0.5, width=6, edge_color="red")
-    nx.draw_networkx_edges(G, pos, edgelist=Drawables.orangeEdges,alpha=0.5, width=6, edge_color="orange")
-    nx.draw_networkx_edges(G, pos, edgelist=Drawables.yellowEdges,alpha=0.5, width=6, edge_color="yellow")
-    nx.draw_networkx_edges(G, pos, edgelist=Drawables.greenEdges,alpha=0.5, width=6, edge_color="green")
-    nx.draw_networkx_edges(G, pos, edgelist=Drawables.oliveEdges,alpha=0.5, width=6, edge_color="olive")
-    nx.draw_networkx_edges(G, pos, edgelist=Drawables.blackEdges,alpha=0.5, width=6, edge_color="black")
 
 #In this function you should write your code!
-def updateValues(num):
+def updateValues():
     #Drawables.blackEdges[0] = (Drawables.blackEdges[0][0] + 1, Drawables.blackEdges[0][1] + 1)
     #getting random actor
     actual = random.randint(0, 99)
@@ -208,10 +121,11 @@ def updateValues(num):
 
     #getting interaction with some probability if they have at least one same feature
     if(numberOfDifferences>0 and numberOfDifferences<features):
+        #Drawables.sheet1.range(Drawables.iterations+1).value =
+        #string= ','.join(str(item) for item in Drawables.actorsGroups)
+        #Drawables.sheet2.range(Drawables.iterations+1).value = list2
         Drawables.iterations=Drawables.iterations+1
-        print(Drawables.iterations)
         randomNumber=random.randint(0, 99)
-        j=0
         if(randomNumber<(100/features)*(features-numberOfDifferences)):
             #showing the interaction
             Drawables.redEdges = []
@@ -233,21 +147,63 @@ def updateValues(num):
             Drawables.actors[actual][feature]=Drawables.actors[actual+neighbour][feature]
 
             #changing the actor's group if their features are the same 
-            if(Drawables.actors[actual]==Drawables.actors[actual+neighbour]): Drawables.actorsGroups[actual]=Drawables.actorsGroups[actual+neighbour]
-            
+            if(Drawables.actors[actual]==Drawables.actors[actual+neighbour]):
+                Drawables.actorsGroups[actual]=Drawables.actorsGroups[actual+neighbour]
+                
+        #ending the simulation after some interations
+        if(Drawables.iterations==100000000):
+            print("działam")
+            klastry=[]
+            x=0
+            for groupNr in range(1,6):
+                notSeen=list(range(graphSize*graphSize))
+                while(notSeen):
+                    actuals=[]
+                    actuals.append(notSeen[0])
+                    cluster=0
+                    while(actuals):
+                        x=actuals[0]
+                        if(Drawables.actorsGroups[x]==groupNr):
+                            cluster=cluster+1
+                            if(x>9): 
+                                if((x-graphSize)in notSeen):
+                                    if(Drawables.actorsGroups[x-graphSize]==groupNr):  actuals.append(x-graphSize)
+                                    notSeen.remove(x-graphSize)
 
-    updatePlot(num)
+                            if(x<90):
+                                if((x+graphSize)in notSeen):
+                                    if(Drawables.actorsGroups[x+graphSize]==groupNr):  actuals.append(x+graphSize)
+                                    notSeen.remove(x+graphSize)
+                            if(x%graphSize>0):
+                                if((x-1)in notSeen):
+                                    if(Drawables.actorsGroups[x-1]==groupNr):  actuals.append(x-1)
+                                    notSeen.remove(x-1)
+                            if(x%graphSize<graphSize-1):
+                                if((x+1)in notSeen):
+                                    if(Drawables.actorsGroups[x+1]==groupNr):  actuals.append(x+1)
+                                    notSeen.remove(x+1)
+                            
+                        actuals.remove(x)
+                        if(x in notSeen): notSeen.remove(x)
+                        if not actuals: 
+                            if(cluster>0):  klastry.append(cluster)
+            print(klastry)
+            x=0
+            y=0
+            for x in range(graphSize):
+                lista=[]
+                for y in range(graphSize):
+                    lista.append(Drawables.actorsGroups[x*graphSize+y])
+                print(lista)
+            Drawables.bloop=0
+                                                      
+
     
-#Main function
-def main(num):
-    updateValues(num)
+
+    
 
 
 Drawables = Drawables()
 Actors()
-
-ani = matplotlib.animation.FuncAnimation(fig, main, interval=0.1, repeat=False)
-ax = plt.gca()
-ax.margins(0.20)
-plt.axis("off")
-plt.show()
+while(Drawables.bloop):
+    updateValues()

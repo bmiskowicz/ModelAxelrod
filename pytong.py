@@ -1,10 +1,15 @@
 import random
 
+
 graphSize = 1000
-features = 100
+features = 10
+
 
 
 class Drawables:    
+    #wb = xw.Book('axelrod.xlsx')  
+    #sheet1 = wb.sheets['actors']
+    #sheet2 = wb.sheets['groups']
     bloop=1
     iterations=0
 
@@ -116,6 +121,10 @@ def updateValues():
 
     #getting interaction with some probability if they have at least one same feature
     if(numberOfDifferences>0 and numberOfDifferences<features):
+        print(Drawables.iterations)
+        #Drawables.sheet1.range(Drawables.iterations+1).value =
+        #string= ','.join(str(item) for item in Drawables.actorsGroups)
+        #Drawables.sheet2.range(Drawables.iterations+1).value = list2
         Drawables.iterations=Drawables.iterations+1
         randomNumber=random.randint(0, 99)
         if(randomNumber<(100/features)*(features-numberOfDifferences)):
@@ -150,7 +159,7 @@ def updateValues():
                 else:
                     Drawables.bloop=0
                     print(Drawables.iterations)
-            
+
 
     
 
