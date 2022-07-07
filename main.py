@@ -109,7 +109,7 @@ def Actors():
         Drawables.actorsGroups[i] = actorGroup
 
 #Main function
-def updatePlot(num):
+def updatePlot():
     ## Clear plot
     ax.clear()
     
@@ -183,9 +183,8 @@ def updatePlot(num):
 
 #In this function you should write your code!
 def updateValues(num):
-    #Drawables.blackEdges[0] = (Drawables.blackEdges[0][0] + 1, Drawables.blackEdges[0][1] + 1)
     #getting random actor
-    actual = random.randint(0, 99)
+    actual = random.randint(0, graphSize*graphSize-1)
 
     #checking what neighbours he has
     avaliable=[]

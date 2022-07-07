@@ -1,15 +1,12 @@
 import random
 
 
-graphSize = 1000
-features = 10
+graphSize = 35
+features = 5
 
-
-
-class Drawables:    
-    #wb = xw.Book('axelrod.xlsx')  
-    #sheet1 = wb.sheets['actors']
-    #sheet2 = wb.sheets['groups']
+class Drawables:   
+    linksOverTime=[] 
+    links=0
     bloop=1
     iterations=0
 
@@ -93,19 +90,39 @@ def Actors():
         Drawables.actorsGroups[i] = actorGroup
 
 
+def Links():
+    Drawables.links=0
+    i=0
+    j=0
+    for i in range(graphSize*(graphSize-1)-1):
+        if((i+1)%graphSize!=0): 
+            g=0
+            numberOfDifferences = 0
+            for g in range(features):
+                if(Drawables.actors[i][g]!=Drawables.actors[i+1][g]):
+                    numberOfDifferences=numberOfDifferences+1
+            if(numberOfDifferences>0 and numberOfDifferences<features): Drawables.links=Drawables.links+1   
+        
+        g=0
+        numberOfDifferences = 0
+        for g in range(features):
+            if(Drawables.actors[i][g]!=Drawables.actors[i+graphSize][g]):
+                numberOfDifferences=numberOfDifferences+1
+        if(numberOfDifferences>0 and numberOfDifferences<features): Drawables.links=Drawables.links+1     
+    Drawables.linksOverTime.append(Drawables.links)
+
 
 #In this function you should write your code!
 def updateValues():
-    #Drawables.blackEdges[0] = (Drawables.blackEdges[0][0] + 1, Drawables.blackEdges[0][1] + 1)
     #getting random actor
-    actual = random.randint(0, 99)
+    actual = random.randint(0, graphSize*graphSize-1)
 
     #checking what neighbours he has
     avaliable=[]
-    if(actual>9): avaliable.append(-10)
-    if(actual<90): avaliable.append(10)
-    if(actual%10>0): avaliable.append(-1)
-    if(actual%10<9): avaliable.append(1)
+    if(actual>graphSize-1): avaliable.append(-graphSize)
+    if(actual<graphSize*(graphSize-1)): avaliable.append(graphSize)
+    if(actual%graphSize>0): avaliable.append(-1)
+    if(actual%graphSize<graphSize-1): avaliable.append(1)
 
     #getting random neighbour
     neighbour=random.choice(avaliable)
@@ -119,54 +136,43 @@ def updateValues():
             differencesList.append(i)
             numberOfDifferences=numberOfDifferences+1
 
+    Drawables.iterations=Drawables.iterations+1
+
     #getting interaction with some probability if they have at least one same feature
     if(numberOfDifferences>0 and numberOfDifferences<features):
-        print(Drawables.iterations)
-        #Drawables.sheet1.range(Drawables.iterations+1).value =
-        #string= ','.join(str(item) for item in Drawables.actorsGroups)
-        #Drawables.sheet2.range(Drawables.iterations+1).value = list2
-        Drawables.iterations=Drawables.iterations+1
-        randomNumber=random.randint(0, 99)
-        if(randomNumber<(100/features)*(features-numberOfDifferences)):
-            #showing the interaction
-            Drawables.redEdges = []
-            Drawables.orangeEdges = []
-            Drawables.yellowEdges = []
-            Drawables.greenEdges = []
-            Drawables.oliveEdges = []
+        #showing the interaction
+        Drawables.redEdges = []
+        Drawables.orangeEdges = []
+        Drawables.yellowEdges = []
+        Drawables.greenEdges = []
+        Drawables.oliveEdges = []
 
-            if(Drawables.actorsGroups[actual+neighbour]==1): Drawables.redEdges = [(actual, actual+neighbour)]
-            elif(Drawables.actorsGroups[actual+neighbour]==2): Drawables.orangeEdges = [(actual, actual+neighbour)]
-            elif(Drawables.actorsGroups[actual+neighbour]==3): Drawables.yellowEdges = [(actual, actual+neighbour)]
-            elif(Drawables.actorsGroups[actual+neighbour]==4): Drawables.greenEdges = [(actual, actual+neighbour)]
-            elif(Drawables.actorsGroups[actual+neighbour]==5): Drawables.oliveEdges = [(actual, actual+neighbour)]
-            
-            #getting random different feature
-            feature=differencesList[random.randint(0, numberOfDifferences-1)]
+        if(Drawables.actorsGroups[actual+neighbour]==1): Drawables.redEdges = [(actual, actual+neighbour)]
+        elif(Drawables.actorsGroups[actual+neighbour]==2): Drawables.orangeEdges = [(actual, actual+neighbour)]
+        elif(Drawables.actorsGroups[actual+neighbour]==3): Drawables.yellowEdges = [(actual, actual+neighbour)]
+        elif(Drawables.actorsGroups[actual+neighbour]==4): Drawables.greenEdges = [(actual, actual+neighbour)]
+        elif(Drawables.actorsGroups[actual+neighbour]==5): Drawables.oliveEdges = [(actual, actual+neighbour)]
+        
+        #getting random different feature
+        feature=differencesList[random.randint(0, numberOfDifferences-1)]
 
-            #changing the actor's feature
-            Drawables.actors[actual][feature]=Drawables.actors[actual+neighbour][feature]
+        #changing the actor's feature
+        Drawables.actors[actual][feature]=Drawables.actors[actual+neighbour][feature]
 
-            #changing the actor's group if their features are the same 
-            if(Drawables.actors[actual]==Drawables.actors[actual+neighbour]):
-                Drawables.actorsGroups[actual]=Drawables.actorsGroups[actual+neighbour]
-                
-                #ending the simulation if all actors have the same values
-                x=0
-                for x in range(99):
-                    if (Drawables.actors[0] != Drawables.actors[x]): 
-                        break
-                else:
-                    Drawables.bloop=0
-                    print(Drawables.iterations)
-
-
+        #changing the actor's group if their features are the same 
+        if(Drawables.actors[actual]==Drawables.actors[actual+neighbour]):
+            Drawables.actorsGroups[actual]=Drawables.actorsGroups[actual+neighbour]
+    Links()
+                   
     
-
-    
-
+    #ending the simulation after some interations
+    if(Drawables.iterations==100000000):
+        print(Drawables.linksOverTime)
+        Drawables.bloop=0
+                                                      
 
 Drawables = Drawables()
 Actors()
+Links()
 while(Drawables.bloop):
     updateValues()
